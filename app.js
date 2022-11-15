@@ -47,6 +47,15 @@ app.post('/todos', (req, res) => {
     .catch((err) => console.error(err))
 })
 
+// get to todo detail
+app.get('/todos/:id', (req, res) => {
+  const { id } = req.params
+  return Todo.findById(id)
+    .lean()
+    .then((todo) => res.render('detail', { todo }))
+    .catch((err) => console.error(err))
+})
+
 app.use((req, res) => {
   res.type('text/plain')
   res.status(404)
