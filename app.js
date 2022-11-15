@@ -78,6 +78,15 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch((err) => console.error(err))
 })
 
+// delete todo
+app.post('/todos/:id/delete', (req, res) => {
+  const { id } = req.params
+  return Todo.findById(id)
+    .then((todo) => todo.remove())
+    .then(() => res.redirect('/'))
+    .catch((err) => console.error(err))
+})
+
 app.use((req, res) => {
   res.type('text/plain')
   res.status(404)
