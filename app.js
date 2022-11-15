@@ -56,6 +56,28 @@ app.get('/todos/:id', (req, res) => {
     .catch((err) => console.error(err))
 })
 
+// get to todo edit page
+app.get('/todos/:id/edit', (req, res) => {
+  const { id } = req.params
+  return Todo.findById(id)
+    .lean()
+    .then((todo) => res.render('edit', { todo }))
+    .catch((err) => console.error(err))
+})
+
+// edit todo
+app.post('/todos/:id/edit', (req, res) => {
+  const { id } = req.params
+  const { name } = req.body
+  return Todo.findById(id)
+    .then((todo) => {
+      todo.name = name
+      return todo.save()
+    })
+    .then(() => res.redirect(`/todos/${id}`))
+    .catch((err) => console.error(err))
+})
+
 app.use((req, res) => {
   res.type('text/plain')
   res.status(404)
