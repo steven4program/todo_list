@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const { engine } = require('express-handlebars')
+const methodOverride = require('method-override')
 const Todo = require('./models/todo')
 const todo = require('./models/todo')
 
@@ -23,6 +24,8 @@ app.engine('.hbs', engine({ extname: '.hbs', defaultLayout: 'main' }))
 app.set('view engine', '.hbs')
 
 app.use(express.urlencoded({ extended: true }))
+
+app.use(methodOverride('_method'))
 
 // get to index page
 app.get('/', (req, res) => {
@@ -67,7 +70,7 @@ app.get('/todos/:id/edit', (req, res) => {
 })
 
 // edit todo
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const { id } = req.params
   const { name, isDone } = req.body
   return Todo.findById(id)
@@ -81,7 +84,7 @@ app.post('/todos/:id/edit', (req, res) => {
 })
 
 // delete todo
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const { id } = req.params
   return Todo.findById(id)
     .then((todo) => todo.remove())
