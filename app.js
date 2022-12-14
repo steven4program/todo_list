@@ -3,8 +3,7 @@ const app = express()
 const mongoose = require('mongoose')
 const { engine } = require('express-handlebars')
 const methodOverride = require('method-override')
-const Todo = require('./models/todo')
-const todo = require('./models/todo')
+const routes = require('./routes')
 
 const port = process.env.PORT || 3000
 
@@ -27,70 +26,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(methodOverride('_method'))
 
-// get to index page
-app.get('/', (req, res) => {
-  Todo.find()
-    .lean()
-    .sort({ _id: 'asc' })
-    .then((todos) => res.render('index', { todos }))
-    .catch((err) => console.error(err))
-})
-
-// adding new todo page
-app.get('/todos/new', (req, res) => {
-  res.render('new')
-})
-
-// post new todos
-app.post('/todos', (req, res) => {
-  const { name } = req.body
-
-  return todo
-    .create({ name })
-    .then(() => res.redirect('/'))
-    .catch((err) => console.error(err))
-})
-
-// get to todo detail
-app.get('/todos/:id', (req, res) => {
-  const { id } = req.params
-  return Todo.findById(id)
-    .lean()
-    .then((todo) => res.render('detail', { todo }))
-    .catch((err) => console.error(err))
-})
-
-// get to todo edit page
-app.get('/todos/:id/edit', (req, res) => {
-  const { id } = req.params
-  return Todo.findById(id)
-    .lean()
-    .then((todo) => res.render('edit', { todo }))
-    .catch((err) => console.error(err))
-})
-
-// edit todo
-app.put('/todos/:id', (req, res) => {
-  const { id } = req.params
-  const { name, isDone } = req.body
-  return Todo.findById(id)
-    .then((todo) => {
-      todo.name = name
-      todo.isDone = isDone === 'on'
-      return todo.save()
-    })
-    .then(() => res.redirect(`/todos/${id}`))
-    .catch((err) => console.error(err))
-})
-
-// delete todo
-app.delete('/todos/:id', (req, res) => {
-  const { id } = req.params
-  return Todo.findById(id)
-    .then((todo) => todo.remove())
-    .then(() => res.redirect('/'))
-    .catch((err) => console.error(err))
-})
+app.use(routes)
 
 app.use((req, res) => {
   res.type('text/plain')
