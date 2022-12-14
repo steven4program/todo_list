@@ -1,16 +1,7 @@
-const mongoose = require('mongoose')
+const db = require('../../config/mongoose')
 const Todo = require('../todo')
-mongoose.connect('mongodb://localhost/todo_list')
-
-const db = mongoose.connection
-
-db.on('error', () => {
-  console.log('mongodb error!')
-})
 
 db.once('open', () => {
-  console.log('mongodb connected!')
-
   for (let i = 1; i < 11; i++) {
     Todo.create({
       name: `name-${i}`
