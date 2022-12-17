@@ -3,6 +3,7 @@ const app = express()
 const { engine } = require('express-handlebars')
 const methodOverride = require('method-override')
 const session = require('express-session')
+const usePassport = require('./config/passport')
 const routes = require('./routes')
 
 const port = process.env.PORT || 3000
@@ -24,6 +25,7 @@ app.use(
   })
 )
 
+usePassport(app)
 app.use(routes)
 
 app.listen(3000, () => {
