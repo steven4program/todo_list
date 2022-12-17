@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const { engine } = require('express-handlebars')
 const methodOverride = require('method-override')
+const session = require('express-session')
 const routes = require('./routes')
 
 const port = process.env.PORT || 3000
@@ -14,6 +15,14 @@ app.set('view engine', '.hbs')
 app.use(express.urlencoded({ extended: true }))
 
 app.use(methodOverride('_method'))
+
+app.use(
+  session({
+    secret: 'expelliarmus',
+    resave: false,
+    saveUninitialized: true
+  })
+)
 
 app.use(routes)
 
